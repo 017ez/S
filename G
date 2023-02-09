@@ -55,7 +55,7 @@ wait(0.55)
 hookfunction(game.Players.LocalPlayer.IsInGroup, function() return true end)
 wait(0.3)
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
-local Window = Library.CreateLib("017's GUI UPDATED", "LightTheme")
+local Window = Library.CreateLib("private017", "LightTheme")
 
 local title = "017"
 local text = getgenv().demisethebest and "Niggas" or "yo nigga wsg"
