@@ -687,14 +687,14 @@ end)
 
 AimingSection:NewButton("Camlock(C)", "ButtonInfo", function()
 getgenv().OldAimPart = "UpperTorso"
-getgenv().AimPart = "UpperTorso" -- For R15 Games: {UpperTorso, LowerTorso, HumanoidRootPart, Head} | For R6 Games: {Head, Torso, HumanoidRootPart}  
+getgenv().AimPart = "HumanoidRootPart" -- For R15 Games: {UpperTorso, LowerTorso, HumanoidRootPart, Head} | For R6 Games: {Head, Torso, HumanoidRootPart}  
     getgenv().AimlockKey = "c"
-    getgenv().AimRadius = 6 -- How far away from someones character you want to lock on at
+    getgenv().AimRadius = 5 -- How far away from someones character you want to lock on at
     getgenv().ThirdPerson = true 
     getgenv().FirstPerson = true
     getgenv().TeamCheck = false -- Check if Target is on your Team (True means it wont lock onto your teamates, false is vice versa) (Set it to false if there are no teams)
     getgenv().PredictMovement = true -- Predicts if they are moving in fast velocity (like jumping) so the aimbot will go a bit faster to match their speed 
-    getgenv().PredictionVelocity = 7.46
+    getgenv().PredictionVelocity = 7.39
     getgenv().CheckIfJumped = true
     getgenv().Smoothness = false
     getgenv().SmoothnessAmount = 0.045
@@ -858,43 +858,6 @@ getgenv().AimPart = "UpperTorso" -- For R15 Games: {UpperTorso, LowerTorso, Huma
 end)
 end)
 
-AimingSection:NewButton("Resolver", "ButtonInfo", function()
-local Players     = game:GetService("Players")
-local RunService  = game:GetService("RunService")
-
-local LocalPlayer = Players.LocalPlayer
-local Character   = LocalPlayer.Character
-local RootPart    = Character:FindFirstChild("HumanoidRootPart")
-
-local Heartbeat, RStepped, Stepped = RunService.Heartbeat, RunService.RenderStepped, RunService.Stepped
-
-LocalPlayer.CharacterAdded:Connect(function(NewCharacter)
-   Character = NewCharacter
-end)
-
-local RVelocity, YVelocity = nil, 0.1
-
-while true do
-   if VelocityChanger then
-       --// this a dumb check asnilsadsa
-       if (not RootPart) or (not RootPart.Parent) or (not RootPart.Parent.Parent) then
-           warn("weird ahh died")
-           RootPart = Character:FindFirstChild("HumanoidRootPart")
-       else
-           RVelocity = RootPart.Velocity
-   
-           RootPart.Velocity = type(Velocity) == "vector" and Velocity or Velocity(RVelocity)
-       
-           RStepped:wait()
-       
-           RootPart.Velocity = RVelocity
-       end
-   end
-   
-   Heartbeat:wait()
-end
-end)
-
 AimViewSection:NewButton("Safe One", "ButtonInfo", function()
 
 game.StarterGui:SetCore("SendNotification", {
@@ -1011,6 +974,62 @@ task.spawn(function()
         a.Enabled = false
     end
 
+    end)
+end)
+end)
+
+AimingSection:NewButton("0 pred resovler(Z)", "ButtonInfo", function()
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local enabled = false
+
+local function zeroOutVelocity(hrp)
+    hrp.Velocity = Vector3.new(0, 0, 0)
+    hrp.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+end
+
+local function onPlayerAdded(player)
+    player.CharacterAdded:Connect(function(character)
+        local hrp = character:WaitForChild("HumanoidRootPart")
+        zeroOutVelocity(hrp)
+    end)
+end
+
+local function onPlayerRemoving(player)
+    player.CharacterAdded:Disconnect()
+end
+
+game.Players.PlayerAdded:Connect(onPlayerAdded)
+game.Players.PlayerRemoving:Connect(onPlayerRemoving)
+
+UserInputService.InputBegan:Connect(function(inputObject)
+    if inputObject.KeyCode == Enum.KeyCode.Z then
+        enabled = not enabled
+        if enabled then
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "Resolver",
+                Text = "Enabled",
+                Duration = 2
+            })
+        else
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "Resolver",
+                Text = "Disabled",
+                Duration = 2
+            })
+        end
+    end
+end)
+
+RunService.Heartbeat:Connect(function()
+    if not enabled then return end
+    pcall(function()
+        for i, player in pairs(game.Players:GetChildren()) do
+            if player.Name ~= game.Players.LocalPlayer.Name then
+                local hrp = player.Character.HumanoidRootPart
+                zeroOutVelocity(hrp)
+            end
+        end
     end)
 end)
 end)
