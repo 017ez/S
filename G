@@ -8,23 +8,7 @@ local players = game:GetService("Players")
 local inputBegan = userInput.InputBegan
 local player = players.LocalPlayer
 
--- Funcs
 
-local sendNotif = function(text)
-	starterGui:SetCore("SendNotification", {
-		Title = "Uni-Resolver | Actyrn#7104",
-		Text = text,
-		Duration = 2.5
-	})
-end
-
--- Code
-
-if not Actyrn7104 then
-	sendNotif("Please use loadstring!")
-	
-	return
-end
 
 inputBegan:Connect(function(key)
 	if key.KeyCode == Actyrn7104.Bind and not userInput:GetFocusedTextBox() then
